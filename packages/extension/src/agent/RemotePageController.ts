@@ -133,7 +133,16 @@ export class RemotePageController {
 		return this.remoteCallDomAction('scroll_horizontally', args)
 	}
 
-	// `execute_javascript` is intentionally not implemented: AbortSignal cannot cross context
+	/**
+	 * Execute JavaScript in the target page (main world) via the content script.
+	 * @note The `AbortSignal` provided by the core `execute_javascript` tool cannot
+	 * cross the messaging boundary (structured clone), so we forward ONLY the
+	 * script. Cancellation of the in-page script is therefore best-effort.
+	 */
+	async executeJavascript(...args: any[]): Promise<DomActionReturn> {
+		const [script] = args
+		return this.remoteCallDomAction('execute_javascript', [script])
+	}
 
 	/** @note Managed by content script via storage polling. */
 	async showMask(): Promise<void> {}

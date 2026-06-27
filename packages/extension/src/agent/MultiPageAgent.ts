@@ -53,8 +53,9 @@ export class MultiPageAgent extends PageAgentCore {
 
 		super({
 			...config,
-			// Disabled: AbortSignal cannot cross contexts
-			experimentalScriptExecutionTool: false,
+			// Enabled for Cicero. AbortSignal cannot cross contexts, so in-page JS
+			// cancellation is best-effort (the script is forwarded without the signal).
+			experimentalScriptExecutionTool: true,
 			pageController: pageController as any,
 			customTools: customTools,
 			customSystemPrompt: systemPrompt,
