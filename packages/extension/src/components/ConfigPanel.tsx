@@ -31,6 +31,10 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 	const [model, setModel] = useState(config?.model || DEMO_MODEL)
 	const [apiKey, setApiKey] = useState(config?.apiKey)
 	const [language, setLanguage] = useState<LanguagePreference>(config?.language)
+	const [pingPong, setPingPong] = useState(config?.pingPong ?? false)
+	const [alwaysSendScreenshot, setAlwaysSendScreenshot] = useState(
+		config?.alwaysSendScreenshot ?? false
+	)
 	const [maxSteps, setMaxSteps] = useState(config?.maxSteps)
 	const [systemInstruction, setSystemInstruction] = useState(config?.systemInstruction ?? '')
 	const [experimentalLlmsTxt, setExperimentalLlmsTxt] = useState(
@@ -56,6 +60,8 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 		setModel(config?.model || DEMO_MODEL)
 		setApiKey(config?.apiKey)
 		setLanguage(config?.language)
+		setPingPong(config?.pingPong ?? false)
+		setAlwaysSendScreenshot(config?.alwaysSendScreenshot ?? false)
 		setMaxSteps(config?.maxSteps)
 		setSystemInstruction(config?.systemInstruction ?? '')
 		setExperimentalLlmsTxt(config?.experimentalLlmsTxt ?? false)
@@ -103,6 +109,8 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 				baseURL,
 				model,
 				language,
+				pingPong,
+				alwaysSendScreenshot,
 				maxSteps: maxSteps || undefined,
 				systemInstruction: systemInstruction || undefined,
 				experimentalLlmsTxt,
@@ -184,7 +192,7 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 				rel="noopener noreferrer"
 				className="flex items-center justify-between p-3 rounded-md border bg-muted/50 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-colors"
 			>
-				Manage Page Agent Hub
+				Gerenciar o Hub do Cícero
 				<ExternalLink className="size-3" />
 			</a>
 
@@ -266,6 +274,27 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 					<option value="en-US">English</option>
 					<option value="zh-CN">中文</option>
 				</select>
+			</div>
+
+			<div className="flex items-center justify-between gap-2">
+				<div className="flex flex-col">
+					<label className="text-xs font-medium">Modo ping-pong (mãos livres)</label>
+					<span className="text-[10px] text-muted-foreground">
+						Depois de cada tarefa, o microfone volta a ouvir sozinho.
+					</span>
+				</div>
+				<Switch checked={pingPong} onCheckedChange={setPingPong} />
+			</div>
+
+			<div className="flex items-center justify-between gap-2">
+				<div className="flex flex-col">
+					<label className="text-xs font-medium">Ver a tela a cada passo</label>
+					<span className="text-[10px] text-muted-foreground">
+						Envia uma captura de tela em todo passo (mais lento). Em erros, a captura é sempre
+						enviada.
+					</span>
+				</div>
+				<Switch checked={alwaysSendScreenshot} onCheckedChange={setAlwaysSendScreenshot} />
 			</div>
 
 			{/* Advanced Config */}

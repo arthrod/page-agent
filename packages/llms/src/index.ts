@@ -1,10 +1,18 @@
 import { OpenAIClient } from './OpenAIClient'
 import { DEFAULT_TEMPERATURE, LLM_MAX_RETRIES } from './constants'
 import { InvokeError, InvokeErrorTypes } from './errors'
-import type { InvokeOptions, InvokeResult, LLMClient, LLMConfig, Message, Tool } from './types'
+import type {
+	ContentPart,
+	InvokeOptions,
+	InvokeResult,
+	LLMClient,
+	LLMConfig,
+	Message,
+	Tool,
+} from './types'
 
 export { InvokeError, InvokeErrorTypes }
-export type { InvokeOptions, InvokeResult, LLMClient, LLMConfig, Message, Tool }
+export type { ContentPart, InvokeOptions, InvokeResult, LLMClient, LLMConfig, Message, Tool }
 
 export function parseLLMConfig(config: LLMConfig): Required<LLMConfig> {
 	// Runtime validation as defensive programming (types already guarantee these)

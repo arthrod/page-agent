@@ -2,6 +2,7 @@ import { type AgentConfig, PageAgentCore } from '@page-agent/core'
 
 import { RemotePageController } from './RemotePageController'
 import { TabsController } from './TabsController'
+import { createHelperTools } from './helperTools'
 import SYSTEM_PROMPT from './system_prompt.md?raw'
 import { createTabTools } from './tabTools'
 
@@ -26,7 +27,9 @@ export class MultiPageAgent extends PageAgentCore {
 		// multi page controller
 		const tabsController = new TabsController()
 		const pageController = new RemotePageController(tabsController)
-		const customTools = createTabTools(tabsController)
+		// Tab tools + the CSP-safe helper toolbelt (click-by-text, fill-by-label,
+		// read-page, etc.) so a small model rarely has to guess indices or write JS.
+		const customTools = { ...createTabTools(tabsController), ...createHelperTools() }
 
 		// system prompt - auto-detect language if not specified
 		const language = config.language ?? detectLanguage()
@@ -56,6 +59,14 @@ export class MultiPageAgent extends PageAgentCore {
 			// Enabled for Cicero. AbortSignal cannot cross contexts, so in-page JS
 			// cancellation is best-effort (the script is forwarded without the signal).
 			experimentalScriptExecutionTool: true,
+			// Let the model SEE the page on demand (capture_screenshot) and get an
+			// automatic screenshot on every error so it can recover visually.
+			// (`alwaysSendScreenshot` — capture on EVERY step — is opt-in via Settings
+			// and flows in from `...config`; it is OFF by default.)
+			experimentalVisionTool: true,
+			// Never feel broken: a failed step becomes an observation (with a
+			// screenshot) and the agent tries again, up to a few times.
+			errorRecovery: { maxConsecutiveErrors: 3, captureScreenshotOnError: true },
 			pageController: pageController as any,
 			customTools: customTools,
 			customSystemPrompt: systemPrompt,

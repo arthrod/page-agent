@@ -36,7 +36,7 @@ export function StatusDot({ status }: { status: AgentStatus }) {
 }
 
 export function Logo({ className }: { className?: string }) {
-	return <img src="/assets/page-agent-256.webp" alt="Page Agent" className={cn('', className)} />
+	return <img src="/assets/cicero-256.png" alt="Cícero" className={cn('', className)} />
 }
 
 // Full-screen ai-motion glow overlay, shown only while running
@@ -102,14 +102,14 @@ export function EmptyState() {
 				<Logo className="relative size-20 opacity-80" />
 			</div>
 			<div>
-				<h2 className="text-base font-medium text-foreground mb-1">Page Agent Ext</h2>
+				<h2 className="text-base font-medium text-foreground mb-1">Cícero Enfermeiro Digital</h2>
 				<TypingAnimation
 					className="text-sm text-muted-foreground"
 					words={[
-						'Enter a task to automate this page',
-						'Execute multi-page tasks',
-						'Call this extension from your web page',
-						'Use this extension in your own agents',
+						'Aperte o microfone e fale comigo',
+						'Eu faço as coisas por você na internet',
+						'Abrir e-mail, pesquisar, preencher…',
+						'Estou aqui para ajudar 💙',
 					]}
 					cursorStyle="underscore"
 					loop

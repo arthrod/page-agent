@@ -144,6 +144,26 @@ export class RemotePageController {
 		return this.remoteCallDomAction('execute_javascript', [script])
 	}
 
+	/**
+	 * Capture a screenshot of the target tab's viewport as a `data:` URL.
+	 * @note Handled directly by the background via `chrome.tabs.captureVisibleTab`
+	 * (NOT routed through the content script — capture is a background/extension
+	 * API). Returns null on restricted pages or on failure.
+	 */
+	async captureScreenshot(): Promise<string | null> {
+		if (!this.currentTabId) return null
+		if (!isContentScriptAllowed(await this.getCurrentUrl())) return null
+
+		const res = await sendMessage({
+			type: 'PAGE_CONTROL',
+			action: 'capture_screenshot',
+			targetTabId: this.currentTabId,
+			payload: [],
+		})
+
+		return (res as { success?: boolean; dataUrl?: string | null } | null)?.dataUrl ?? null
+	}
+
 	/** @note Managed by content script via storage polling. */
 	async showMask(): Promise<void> {}
 	/** @note Managed by content script via storage polling. */

@@ -136,6 +136,15 @@ ordering are in §5; the file-by-file table is in §4.
   **cancellation is best-effort** for in-page JS (documented). Set
   `experimentalScriptExecutionTool: true`. This single change also unlocks all
   the JS-based pre-made tools in §3.3.
+- **✅ Status: DONE + dogfooded (Phase 1).** The bridge is implemented and was
+  verified end-to-end in a real loaded extension: a `PAGE_CONTROL`/`execute_javascript`
+  message routes agent context → background relay → content script → page and
+  returns a structured `DomActionReturn`.
+- **⚠️ Known limitation (found in dogfood):** the script runs as a **string in the
+  MAIN world**, so `unsafe-eval` CSP blocks it on strict sites (e.g. `example.com`).
+  `execute_javascript` should stay an **advanced/escape-hatch** tool; the everyday
+  toolbelt (§3.3) must use **isolated-world** DOM ops instead. Optionally add a
+  CSP-proof variant via `chrome.scripting.executeScript` (ISOLATED world).
 
 ### 3.3 Pre-made high-level tools ("make the dumb model's life easy")
 
@@ -143,9 +152,21 @@ ordering are in §5; the file-by-file table is in §4.
   correct ad-hoc JavaScript. We give it robust, intention-level tools so it
   rarely has to. This is the single biggest reliability lever.
 - **Files:** new `src/agent/helperTools.ts`, registered as `customTools`
-  alongside `createTabTools` in `MultiPageAgent.ts:29`. Each tool is a thin,
-  defensive wrapper over `this.pageController.executeJavascript(...)` (or existing
-  DOM actions) returning a clear, short string.
+  alongside `createTabTools` in `MultiPageAgent.ts:29`. Each tool returns a clear,
+  short string.
+- **⚠️ Implementation rule (verified by Phase-1 dogfood — do NOT use eval).** The
+  existing `execute_javascript` runs the script as a **string in the page's MAIN
+  world**, which is blocked by `unsafe-eval` Content-Security-Policy on real sites
+  (confirmed live: `example.com` returned _"Evaluating a string as JavaScript
+  violates the following Content Security Policy directive because 'unsafe-eval'
+  is not an allowed source"_). Therefore the helper tools must **NOT** be
+  `execute_javascript` string-eval wrappers. Implement them as **isolated-world
+  DOM operations** — either existing `PageController` DOM actions, new
+  `PageController` methods, or `chrome.scripting.executeScript({ target, func })`
+  running in the **ISOLATED** world (extension-privileged, **CSP-exempt**, no
+  string eval). Isolated-world code can touch the DOM (all these tools need) but
+  not page JS globals — fine here. This keeps the toolbelt working on
+  CSP-strict sites (Gmail, bank/court portals — exactly her use cases).
 - **Tool set (curated for a non-technical user's real tasks):**
   | Tool | What it does (robustly, so the model doesn't have to) |
   |---|---|
