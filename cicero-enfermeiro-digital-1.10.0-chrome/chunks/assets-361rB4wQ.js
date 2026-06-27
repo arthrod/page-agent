@@ -15801,7 +15801,7 @@ var $ZodObjectJIT = /*@__PURE__*/ $constructor("$ZodObjectJIT", (inst, def) => {
             })));
           }
         }
-        
+
         if (${id}.value === undefined) {
           if (${k} in input) {
             newResult[${k}] = undefined;
@@ -15809,7 +15809,7 @@ var $ZodObjectJIT = /*@__PURE__*/ $constructor("$ZodObjectJIT", (inst, def) => {
         } else {
           newResult[${k}] = ${id}.value;
         }
-        
+
       `);
 			else if (!isOptionalIn) doc.write(`
         const ${id}_present = ${k} in input;
@@ -15844,7 +15844,7 @@ var $ZodObjectJIT = /*@__PURE__*/ $constructor("$ZodObjectJIT", (inst, def) => {
             path: iss.path ? [${k}, ...iss.path] : [${k}]
           })));
         }
-        
+
         if (${id}.value === undefined) {
           if (${k} in input) {
             newResult[${k}] = undefined;
@@ -15852,7 +15852,7 @@ var $ZodObjectJIT = /*@__PURE__*/ $constructor("$ZodObjectJIT", (inst, def) => {
         } else {
           newResult[${k}] = ${id}.value;
         }
-        
+
       `);
 		}
 		doc.write(`payload.value = newResult;`);
@@ -19049,7 +19049,7 @@ var OpenAIClient = class {
 //#endregion
 //#region ../llms/src/index.ts
 function parseLLMConfig(config) {
-	if (!config.baseURL || !config.model) throw new Error("[PageAgent] LLM configuration required. Please provide: baseURL, model. See: https://alibaba.github.io/page-agent/docs/features/models");
+	if (!config.baseURL || !config.model) throw new Error("[PageAgent] LLM configuration required. Please provide: baseURL, model. See: https://arthrod.github.io/page-agent/docs/features/models");
 	return {
 		baseURL: config.baseURL,
 		model: config.model,
@@ -19754,6 +19754,7 @@ var PageAgentCore = class extends EventTarget {
 						rawResponse: result.rawResponse,
 						rawRequest: result.rawRequest
 					});
+					if (this.config.errorRecovery?.captureScreenshotOnError && actionName !== "done" && typeof output === "string" && /^❌|\berro\b|\berror\b|falh|não encontr|não consegui|not allowed|unable to|failed|cannot/i.test(output)) await suppress(() => this.#captureToPending());
 					this.#consecutiveErrors = 0;
 					if (actionName === "done") {
 						const success = action.input?.success ?? false;
@@ -20858,6 +20859,67 @@ function createHelperTools() {
 				}
 			}
 		}),
+		go_back: tool({
+			description: "Go back to the previous page in this tab's history (the browser Back button). Use THIS to go back — never run JavaScript like history.back(), which is blocked on many sites.",
+			inputSchema: object({}),
+			execute: async function(_args, ctx) {
+				try {
+					ctx.signal.throwIfAborted();
+					const tabId = await resolveTabId(this);
+					if (tabId == null) return NO_TAB_MESSAGE;
+					await chrome.tabs.goBack(tabId);
+					return "Voltei para a página anterior.";
+				} catch (error) {
+					return `Não consegui voltar para a página anterior: ${errorMessage(error)}`;
+				}
+			}
+		}),
+		go_forward: tool({
+			description: "Go forward to the next page in this tab's history (the browser Forward button).",
+			inputSchema: object({}),
+			execute: async function(_args, ctx) {
+				try {
+					ctx.signal.throwIfAborted();
+					const tabId = await resolveTabId(this);
+					if (tabId == null) return NO_TAB_MESSAGE;
+					await chrome.tabs.goForward(tabId);
+					return "Avancei para a próxima página.";
+				} catch (error) {
+					return `Não consegui avançar: ${errorMessage(error)}`;
+				}
+			}
+		}),
+		reload_page: tool({
+			description: "Reload (refresh) the current page.",
+			inputSchema: object({}),
+			execute: async function(_args, ctx) {
+				try {
+					ctx.signal.throwIfAborted();
+					const tabId = await resolveTabId(this);
+					if (tabId == null) return NO_TAB_MESSAGE;
+					await chrome.tabs.reload(tabId);
+					return "Recarreguei a página.";
+				} catch (error) {
+					return `Não consegui recarregar a página: ${errorMessage(error)}`;
+				}
+			}
+		}),
+		go_to_url: tool({
+			description: "Navigate the current tab to a URL (the address bar). Use THIS to open a website — never run JavaScript to change location. Example: { \"url\": \"google.com\" }.",
+			inputSchema: object({ url: string().describe("The address to open, e.g. \"google.com\" or \"https://gmail.com\"") }),
+			execute: async function(args, ctx) {
+				try {
+					ctx.signal.throwIfAborted();
+					const tabId = await resolveTabId(this);
+					if (tabId == null) return NO_TAB_MESSAGE;
+					const url = /^[a-z]+:\/\//i.test(args.url) ? args.url : `https://${args.url}`;
+					await chrome.tabs.update(tabId, { url });
+					return `Abrindo ${url}.`;
+				} catch (error) {
+					return `Não consegui abrir "${args.url}": ${errorMessage(error)}`;
+				}
+			}
+		}),
 		wait_for_text: tool({
 			description: "Wait until the given text appears anywhere on the page, polling for up to `seconds` seconds (default 8, max 30). Use after an action that loads content asynchronously. Returns as soon as the text is found, or a timeout message.",
 			inputSchema: object({
@@ -21036,6 +21098,7 @@ A pessoa que você ajuda quebrou as duas mãos e não consegue usar teclado nem 
 Como agir:
 - Diga em poucas palavras o que você vai fazer e, no fim, o que conseguiu.
 - Prefira as ferramentas de alto nível (clicar por texto, preencher por rótulo, ler o texto da página, listar ações) em vez de adivinhar índices ou escrever código.
+- NUNCA use execute_javascript para navegar, voltar, recarregar ou ler a página — em muitos sites isso é bloqueado e falha. Em vez disso use: go_back (voltar), go_forward (avançar), reload_page (recarregar), go_to_url (abrir um site), read_page_text (ler), click_text (clicar), fill_field (preencher). Use execute_javascript só em último caso.
 - Quando não tiver certeza do que está na tela, use a ferramenta de captura de tela para ver a página. Quando uma ação falhar, você recebe uma captura de tela automaticamente — olhe a imagem e tente outro caminho.
 - Quando uma ação falhar, você receberá automaticamente uma captura de tela — observe-a com calma e tente outro caminho. Nunca desista no primeiro erro.
 
@@ -29973,7 +30036,7 @@ function createMotionProxy(preloadedFeatures, createVisualElement) {
 	const deprecatedFactoryFunction = (Component, options) => {
 		return factory(Component, options);
 	};
-	return new Proxy(deprecatedFactoryFunction, { 
+	return new Proxy(deprecatedFactoryFunction, {
 	/**
 	* Called when `motion` is referenced with a prop: `motion.div`, `motion.input` etc.
 	* The prop name is passed through as `key` and we can use that to generate a `motion`
@@ -31599,7 +31662,7 @@ function EmptyState() {
 						})
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
-						href: "https://alibaba.github.io/page-agent/docs/features/chrome-extension",
+						href: "https://arthrod.github.io/page-agent/docs/features/chrome-extension",
 						target: "_blank",
 						rel: "noopener noreferrer",
 						className: "hover:text-foreground transition-colors",

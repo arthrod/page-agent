@@ -1,95 +1,107 @@
-import type { AgentStatus } from '@page-agent/core'
-import { Motion } from 'ai-motion'
-import { BookOpen, Globe } from 'lucide-react'
-import { useEffect, useRef } from 'react'
-import { siGithub } from 'simple-icons'
+import type { AgentStatus } from "@page-agent/core";
+import { Motion } from "ai-motion";
+import { BookOpen, Globe } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { siGithub } from "simple-icons";
 
-import { TypingAnimation } from '@/components/ui/typing-animation'
-import { cn } from '@/lib/utils'
+import { TypingAnimation } from "@/components/ui/typing-animation";
+import { cn } from "@/lib/utils";
 
 // Status dot indicator
 export function StatusDot({ status }: { status: AgentStatus }) {
 	const colorClass = {
-		idle: 'bg-muted-foreground',
-		running: 'bg-blue-500',
-		completed: 'bg-green-500',
-		error: 'bg-destructive',
-		stopped: 'bg-muted-foreground',
-	}[status]
+		idle: "bg-muted-foreground",
+		running: "bg-blue-500",
+		completed: "bg-green-500",
+		error: "bg-destructive",
+		stopped: "bg-muted-foreground",
+	}[status];
 
 	const label = {
-		idle: 'Ready',
-		running: 'Running',
-		completed: 'Done',
-		error: 'Error',
-		stopped: 'Stopped',
-	}[status]
+		idle: "Ready",
+		running: "Running",
+		completed: "Done",
+		error: "Error",
+		stopped: "Stopped",
+	}[status];
 
 	return (
 		<div className="flex items-center gap-1.5 mr-2">
 			<span
-				className={cn('size-2 rounded-full', colorClass, status === 'running' && 'animate-pulse')}
+				className={cn(
+					"size-2 rounded-full",
+					colorClass,
+					status === "running" && "animate-pulse",
+				)}
 			/>
 			<span className="text-xs text-muted-foreground">{label}</span>
 		</div>
-	)
+	);
 }
 
 export function Logo({ className }: { className?: string }) {
-	return <img src="/assets/cicero-256.png" alt="Cícero" className={cn('', className)} />
+	return (
+		<img
+			src="/assets/cicero-256.png"
+			alt="Cícero"
+			className={cn("", className)}
+		/>
+	);
 }
 
 // Full-screen ai-motion glow overlay, shown only while running
 export function MotionOverlay({ active }: { active: boolean }) {
-	const containerRef = useRef<HTMLDivElement>(null)
-	const motionRef = useRef<Motion | null>(null)
+	const containerRef = useRef<HTMLDivElement>(null);
+	const motionRef = useRef<Motion | null>(null);
 
 	useEffect(() => {
 		try {
-			const mode = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+			const mode = document.documentElement.classList.contains("dark")
+				? "dark"
+				: "light";
 			const motion = new Motion({
 				mode,
 				borderWidth: 4,
 				borderRadius: 14,
-				glowWidth: mode === 'dark' ? 120 : 60,
-				styles: { position: 'absolute', inset: '0' },
-			})
-			motionRef.current = motion
-			containerRef.current!.appendChild(motion.element)
-			motion.autoResize(containerRef.current!)
+				glowWidth: mode === "dark" ? 120 : 60,
+				styles: { position: "absolute", inset: "0" },
+			});
+			motionRef.current = motion;
+			containerRef.current!.appendChild(motion.element);
+			motion.autoResize(containerRef.current!);
 		} catch (e) {
-			console.warn('[MotionOverlay] Motion unavailable:', e)
+			console.warn("[MotionOverlay] Motion unavailable:", e);
 		}
 
 		return () => {
-			motionRef.current?.dispose()
-			motionRef.current = null
-		}
-	}, [])
+			motionRef.current?.dispose();
+			motionRef.current = null;
+		};
+	}, []);
 
 	useEffect(() => {
-		const motion = motionRef.current
-		if (!motion) return
+		const motion = motionRef.current;
+		if (!motion) return;
 
-		let disposed = false
+		let disposed = false;
 		if (active) {
-			motion.start()
-			motion.fadeIn()
+			motion.start();
+			motion.fadeIn();
 		} else {
-			motion.fadeOut().then(() => !disposed && motion.pause())
+			motion.fadeOut().then(() => !disposed && motion.pause());
 		}
 		return () => {
-			disposed = true
-		}
-	}, [active])
+			disposed = true;
+		};
+	}, [active]);
 
 	return (
 		<div
 			ref={containerRef}
 			className="pointer-events-none absolute inset-0 z-10 opacity-60 overflow-hidden"
-			style={{ display: active ? undefined : 'none' }}
+			style={{ display: active ? undefined : "none" }}
 		/>
-	)
+	);
 }
 
 // Empty state with logo and breathing glow
@@ -102,14 +114,16 @@ export function EmptyState() {
 				<Logo className="relative size-20 opacity-80" />
 			</div>
 			<div>
-				<h2 className="text-base font-medium text-foreground mb-1">Cícero Enfermeiro Digital</h2>
+				<h2 className="text-base font-medium text-foreground mb-1">
+					Cícero Enfermeiro Digital
+				</h2>
 				<TypingAnimation
 					className="text-sm text-muted-foreground"
 					words={[
-						'Aperte o microfone e fale comigo',
-						'Eu faço as coisas por você na internet',
-						'Abrir e-mail, pesquisar, preencher…',
-						'Estou aqui para ajudar 💙',
+						"Aperte o microfone e fale comigo",
+						"Eu faço as coisas por você na internet",
+						"Abrir e-mail, pesquisar, preencher…",
+						"Estou aqui para ajudar 💙",
 					]}
 					cursorStyle="underscore"
 					loop
@@ -132,7 +146,7 @@ export function EmptyState() {
 					</svg>
 				</a>
 				<a
-					href="https://alibaba.github.io/page-agent/docs/features/chrome-extension"
+					href="https://arthrod.github.io/page-agent/docs/features/chrome-extension"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="hover:text-foreground transition-colors"
@@ -151,5 +165,5 @@ export function EmptyState() {
 				</a>
 			</div>
 		</div>
-	)
+	);
 }
