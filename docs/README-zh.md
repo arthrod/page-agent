@@ -11,7 +11,7 @@
 
 🌐 [English](../README.md) | **中文**
 
-<a href="https://alibaba.github.io/page-agent/" target="_blank"><b>🚀 Demo</b></a> | <a href="https://alibaba.github.io/page-agent/docs/introduction/overview" target="_blank"><b>📖 Docs</b></a> | <a href="https://news.ycombinator.com/item?id=47264138" target="_blank"><b>📢 HN Discussion</b></a> | <a href="https://x.com/simonluvramen" target="_blank"><b>𝕏 Follow on X</b></a>
+<a href="https://arthrod.github.io/page-agent/" target="_blank"><b>🚀 Demo</b></a> | <a href="https://arthrod.github.io/page-agent/docs/introduction/overview" target="_blank"><b>📖 Docs</b></a> | <a href="https://news.ycombinator.com/item?id=47264138" target="_blank"><b>📢 HN Discussion</b></a> | <a href="https://arthur.law" target="_blank"><b>𝕏 Follow on X</b></a>
 
 <!-- demo video -->
 
@@ -26,15 +26,15 @@ https://github.com/user-attachments/assets/a1f2eae2-13fb-4aae-98cf-a3fc1620a6c2
 - **📖 基于文本的 DOM 操作**
     - 无需截图，无需多模态模型或特殊权限
 - **🧠 自备 LLM**
-- 🐙 可选的 [Chrome 扩展](https://alibaba.github.io/page-agent/docs/features/chrome-extension)，支持跨页面任务
-    - [MCP Server (Beta)](https://alibaba.github.io/page-agent/docs/features/mcp-server)
+- 🐙 可选的 [Chrome 扩展](https://arthrod.github.io/page-agent/docs/features/chrome-extension)，支持跨页面任务
+    - [MCP Server (Beta)](https://arthrod.github.io/page-agent/docs/features/mcp-server)
 
 ## 💡 应用场景
 
 - **SaaS AI Copilot** — 几行代码为你的产品加上 AI 副驾驶，无需重写后端。
 - **智能表单填写** — 把 20 次点击变成一句话。ERP、CRM、管理后台的最佳拍档。
 - **无障碍增强** — 用自然语言让任何网页无障碍。语音指令、屏幕阅读器，零门槛。
-- **跨页面 Agent** — 通过可选的 [Chrome 扩展](https://alibaba.github.io/page-agent/docs/features/chrome-extension)，让你自己的 Web Agent 跨标签页工作。
+- **跨页面 Agent** — 通过可选的 [Chrome 扩展](https://arthrod.github.io/page-agent/docs/features/chrome-extension)，让你自己的 Web Agent 跨标签页工作。
 - 通过 MCP 为现有 Agent 加入浏览器控制能力。
 
 ## 🚀 快速开始
@@ -47,7 +47,7 @@ https://github.com/user-attachments/assets/a1f2eae2-13fb-4aae-98cf-a3fc1620a6c2
 <script src="{URL}" crossorigin="true"></script>
 ```
 
-> **⚠️ 仅用于技术评估。** 该 Demo CDN 使用了免费的[测试 LLM API](https://alibaba.github.io/page-agent/docs/features/models#free-testing-api)，使用即表示您同意其[条款](https://github.com/alibaba/page-agent/blob/main/docs/terms-and-privacy.md)。
+> **⚠️ 仅用于技术评估。** 该 Demo CDN 使用了免费的[测试 LLM API](https://arthrod.github.io/page-agent/docs/features/models#free-testing-api)，使用即表示您同意其[条款](https://github.com/alibaba/page-agent/blob/main/docs/terms-and-privacy.md)。
 
 | Mirrors | URL                                                                                 |
 | ------- | ----------------------------------------------------------------------------------- |
@@ -75,7 +75,7 @@ const agent = new PageAgent({
 await agent.execute('点击登录按钮')
 ```
 
-更多编程用法，请参阅 [📖 文档](https://alibaba.github.io/page-agent/docs/introduction/overview)。
+更多编程用法，请参阅 [📖 文档](https://arthrod.github.io/page-agent/docs/introduction/overview)。
 
 ## 🤝 贡献
 

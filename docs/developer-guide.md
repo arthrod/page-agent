@@ -66,7 +66,7 @@ If your AI assistant does not support [AGENTS.md](https://agents.md/). Add an al
     LLM_MODEL_NAME="qwen3:14b"
     ```
 
-    > @see https://alibaba.github.io/page-agent/docs/features/models#ollama for configuration
+    > @see https://arthrod.github.io/page-agent/docs/features/models#ollama for configuration
 
 - **Restart the dev server** to load new env vars
 - If not provided, the demo will use the free testing proxy by default. By using it, you agree to its [terms](./terms-and-privacy.md).

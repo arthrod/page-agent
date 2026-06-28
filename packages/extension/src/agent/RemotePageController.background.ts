@@ -20,6 +20,22 @@ export function handlePageControlMessage(
 		return
 	}
 
+	if (action === 'capture_screenshot') {
+		// captureVisibleTab is a background/extension API — handle it here, do NOT
+		// forward to the content script. Look up the tab's window first.
+		chrome.tabs
+			.get(targetTabId)
+			.then((tab) => chrome.tabs.captureVisibleTab(tab.windowId, { format: 'jpeg', quality: 60 }))
+			.then((dataUrl) => {
+				sendResponse({ success: true, dataUrl })
+			})
+			.catch((error) => {
+				console.error(PREFIX, 'capture_screenshot', error)
+				sendResponse({ success: false, dataUrl: null })
+			})
+		return true // async response
+	}
+
 	// proxy to content script
 	chrome.tabs
 		.sendMessage(targetTabId, {

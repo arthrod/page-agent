@@ -1,9 +1,9 @@
-import { siGithub, siX } from 'simple-icons'
+import { siGithub, siX } from "simple-icons";
 
-import { useLanguage } from '@/i18n/context'
+import { useLanguage } from "@/i18n/context";
 
 export default function Footer() {
-	const { isZh } = useLanguage()
+	const { isZh } = useLanguage();
 
 	return (
 		<footer
@@ -15,7 +15,7 @@ export default function Footer() {
 					<div className="text-gray-600 dark:text-gray-300 text-sm text-center md:text-left">
 						<p>
 							<a
-								href="https://x.com/simonluvramen"
+								href="https://arthur.law"
 								target="_blank"
 								rel="noopener noreferrer"
 								className="inline-block bg-[linear-gradient(60deg,#39b6ff_0%,#bd45fb_33%,#ff5733_66%,#ffd600_100%)] bg-clip-text text-xs leading-none text-transparent font-mono transition-opacity duration-200 hover:opacity-85"
@@ -35,10 +35,10 @@ export default function Footer() {
 							rel="noopener noreferrer"
 							className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 text-sm mr-4"
 						>
-							{isZh ? '使用条款与隐私' : 'Terms & Privacy'}
+							{isZh ? "使用条款与隐私" : "Terms & Privacy"}
 						</a>
 						<a
-							href="https://x.com/simonluvramen"
+							href="https://arthur.law"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 mr-4"
@@ -58,7 +58,7 @@ export default function Footer() {
 							target="_blank"
 							rel="noopener noreferrer"
 							className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
-							aria-label={isZh ? '访问 GitHub 仓库' : 'Visit GitHub repository'}
+							aria-label={isZh ? "访问 GitHub 仓库" : "Visit GitHub repository"}
 						>
 							<svg
 								role="img"
@@ -73,5 +73,5 @@ export default function Footer() {
 				</div>
 			</div>
 		</footer>
-	)
+	);
 }
