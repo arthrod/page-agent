@@ -23,7 +23,8 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
             "env": {
                 "LLM_BASE_URL": "https://dashscope.aliyuncs.com/compatible-mode/v1",
                 "LLM_API_KEY": "sk-xxx",
-                "LLM_MODEL_NAME": "qwen3.5-plus"
+                "LLM_MODEL_NAME": "qwen3.5-plus",
+                "HUB_TOKEN": "paste-the-Hub-Token-from-the-extension-Settings"
             }
         }
     }
@@ -44,12 +45,13 @@ Same format — add the config to the MCP settings of your client.
 
 ## Environment Variables
 
-| Variable         | Default | Description           |
-| ---------------- | ------- | --------------------- |
-| `LLM_BASE_URL`   | —       | LLM API base URL      |
-| `LLM_API_KEY`    | —       | LLM API key           |
-| `LLM_MODEL_NAME` | —       | Model name            |
-| `PORT`           | `38401` | HTTP + WebSocket port |
+| Variable         | Default | Description                                                                                                                                                                                          |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LLM_BASE_URL`   | —       | LLM API base URL                                                                                                                                                                                     |
+| `LLM_API_KEY`    | —       | LLM API key                                                                                                                                                                                          |
+| `LLM_MODEL_NAME` | —       | Model name                                                                                                                                                                                           |
+| `PORT`           | `38401` | HTTP + WebSocket port                                                                                                                                                                                |
+| `HUB_TOKEN`      | —       | Hub token from the extension Settings panel. When set, the extension accepts this server's calls without the per-session approval prompt. Leave empty to be prompted in the hub tab on each session. |
 
 ## How It Works
 
