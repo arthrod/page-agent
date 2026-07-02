@@ -1,5 +1,6 @@
 import { handlePageControlMessage } from '@/agent/RemotePageController.background'
 import { handleTabControlMessage, setupTabEventsPort } from '@/agent/TabsController.background'
+import { HUB_TOKEN_KEY, USER_AUTH_TOKEN_KEY, ensureStorageToken } from '@/agent/tokens'
 
 export default defineBackground(() => {
 	console.log('[Background] Service Worker started')
@@ -8,14 +9,13 @@ export default defineBackground(() => {
 
 	setupTabEventsPort()
 
-	// generate user auth token
-
-	chrome.storage.local.get('PageAgentExtUserAuthToken').then((result) => {
-		if (result.PageAgentExtUserAuthToken) return
-
-		const userAuthToken = crypto.randomUUID()
-		chrome.storage.local.set({ PageAgentExtUserAuthToken: userAuthToken })
-	})
+	// Generate the access tokens on first run. Both are empty by default,
+	// generated randomly on first use, and never overwritten once present:
+	//   - user auth token: lets a web page call the in-page agent API.
+	//   - hub token: lets an external app (MCP hub) accept calls without the
+	//     per-session confirm dialog.
+	void ensureStorageToken(USER_AUTH_TOKEN_KEY)
+	void ensureStorageToken(HUB_TOKEN_KEY)
 
 	// message proxy
 
